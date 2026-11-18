@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="auth-page auth-login-page">
+  <div class="auth-orb auth-orb-one"></div><div class="auth-orb auth-orb-two"></div>
+  <div class="auth-shell">
+    <aside class="auth-showcase">
+      <a class="auth-brand" href="{{ url_for('home') }}"><span class="brand-mark">CEH</span><span><strong>CAMPUS EVENT HUB</strong><small>CELEBRATE · CONNECT · CREATE</small></span></a>
+      <div class="showcase-copy">
+        <span class="eyebrow"><i></i> YOUR CAMPUS. YOUR MOMENT.</span>
+        <h1>Every event<br>starts <em>here.</em></h1>
+        <p>Discover what’s happening, join your campus community, and make every moment count.</p>
+        <div class="showcase-stats"><div><strong>01</strong><span>Discover events</span></div><div><strong>02</strong><span>Register easily</span></div><div><strong>03</strong><span>Make memories</span></div></div>
+      </div>
+      <div class="showcase-foot"><span>✦</span> MADE FOR CAMPUS LIFE <span class="foot-line"></span> <span>STCET</span></div>
+    </aside>
+    <div class="auth-card-wrap">
+      <div class="auth-card">
+        <div class="auth-card-heading"><span class="mobile-eyebrow">CAMPUS EVENT HUB</span><span class="auth-icon">↗</span><p class="auth-kicker">WELCOME BACK</p><h2>Sign in to your<br><span>account.</span></h2><p class="auth-subtitle">Enter your details to continue to your campus.</p></div>
+        {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="auth-alert {{ category }}" role="alert">{{ message }}</div>{% endfor %}{% endwith %}
+        <form method="POST" action="{{ url_for('login') }}" class="auth-form auth-form-modern">
+          <div class="field-group"><label for="login-role">ACCOUNT TYPE</label><div class="input-shell"><span class="field-icon">▦</span><select id="login-role" name="role" required><option value="student">Student</option><option value="admin">Administrator</option></select><span class="select-chevron">⌄</span></div></div>
+          <div class="field-group"><label for="login-email">EMAIL ADDRESS</label><div class="input-shell"><span class="field-icon">✉</span><input id="login-email" type="email" name="email" placeholder="you@example.com" autocomplete="username" required></div></div>
+          <div class="field-group"><label for="login-password">PASSWORD</label><div class="input-shell"><span class="field-icon">♙</span><input id="login-password" type="password" name="password" placeholder="Enter your password" autocomplete="current-password" required><button class="password-toggle" type="button" aria-label="Show password" data-toggle-password="login-password">Show</button></div></div>
+          <button type="submit" class="auth-submit"><span>Sign in</span><span class="submit-arrow">→</span></button>
+        </form>
+        <p class="auth-switch-modern">New to Campus Event Hub? <a href="{{ url_for('signup') }}">Create an account <span>↗</span></a></p>
+        <a class="auth-back" href="{{ url_for('home') }}">← Back to home</a>
+      </div>
+      <p class="auth-legal">© 2026 Campus Event Hub. All rights reserved.</p>
+    </div>
+  </div>
+</section>
+<script>
+document.querySelectorAll('[data-toggle-password]').forEach(button => button.addEventListener('click', () => { const input = document.getElementById(button.dataset.togglePassword); const show = input.type === 'password'; input.type = show ? 'text' : 'password'; button.textContent = show ? 'Hide' : 'Show'; button.setAttribute('aria-label', show ? 'Hide password' : 'Show password'); }));
+</script>
+{% endblock %}

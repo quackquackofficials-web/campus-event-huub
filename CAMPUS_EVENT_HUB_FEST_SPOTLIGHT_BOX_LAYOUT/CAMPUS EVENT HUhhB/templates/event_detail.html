@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% set labels = {'Ongoing': '● LIVE NOW', 'Upcoming': 'UPCOMING', 'Completed': 'COMPLETED'} %}
+
+<section class="page-section">
+    {% include '_flashes.html' %}
+
+    <div class="section-heading">
+        <p>✦ {{ (event.category or 'CAMPUS EVENT') | upper }} ✦</p>
+        <h2>{{ event.title }}</h2>
+        <span>{{ event.event_kind }}</span>
+    </div>
+
+    <div class="event-detail-layout">
+        <div class="event-detail-main">
+            {% if event.poster %}
+            <img class="event-detail-poster"
+                 src="{{ url_for('static', filename='uploads/' + event.poster) }}"
+                 alt="{{ event.title }}">
+            {% else %}
+            <div class="poster-placeholder event-detail-poster">✦ YVIDH ARTS FEST 2026 ✦</div>
+            {% endif %}
+            <span class="event-status {{ event.status|lower }}">{{ labels[event.status] }}</span>
+            <h3>About this event</h3>
+            <p>{{ event.description or 'More event details will be announced soon.' }}</p>
+
+            <div class="event-meta event-detail-meta">
+                <span>📅 {{ event.start_date }}{% if event.end_date != event.start_date %} → {{ event.end_date }}{% endif %}</span>
+                <span>🕒 {% if event.start_time %}{{ event.start_time }}{% if event.end_time %} – {{ event.end_time }}{% endif %}{% else %}Time to be announced{% endif %}</span>
+                <span>📍 {{ event.venue or 'Venue to be announced' }}</span>
+                <span>👥 {{ event.reg_count }} registered</span>
+            </div>
+        </div>
+
+        <aside class="event-detail-side">
+            <h3>Registration</h3>
+            {% if session.get('role') == 'student' %}
+                {% if event.registered %}
+                <p class="registered-badge">✔ You are registered for this event.</p>
+                <form method="POST" action="{{ url_for('unregister_event', event_id=event.id) }}">
+                    <button class="auth-button" type="submit">Cancel Registration</button>
+                </form>
+                {% elif event.status != 'Completed' %}
+                <p>Register online to participate in this event.</p>
+                <form method="POST" action="{{ url_for('register_event', event_id=event.id) }}" class="auth-form">
+                    <label>Note (optional)</label>
+                    <textarea name="note" rows="3" maxlength="200" placeholder="Any additional information"></textarea>
+                    <button class="auth-button" type="submit">Register Now ↗</button>
+                </form>
+                {% else %}
+                <p>Registration is closed for this completed event.</p>
+                {% endif %}
+            {% elif not session.get('role') %}
+                <p>Login as a student to register for this event.</p>
+                <a class="hero-button" href="{{ url_for('login') }}">Login to Register ↗</a>
+            {% else %}
+                <p>Admin view: {{ event.reg_count }} student(s) registered.</p>
+            {% endif %}
+
+            <div class="event-admin-info">
+                <h4>Event In-charge</h4>
+                <p>{{ event.admin_name or 'Admin assignment pending' }}</p>
+            </div>
+
+            {% if can_manage %}
+            <div class="dash-actions">
+                <a class="hero-button" href="{{ url_for('event_edit', event_id=event.id) }}">Edit Event</a>
+                <a class="hero-button" href="{{ url_for('event_registrations', event_id=event.id) }}">View Registrations</a>
+                {% if event.status != 'Upcoming' %}
+                <a class="hero-button" href="{{ url_for('event_winners', event_id=event.id) }}">Update Winners</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </aside>
+    </div>
+
+    {% if event.winners %}
+    <div class="section-heading">
+        <p>✦ RESULTS ✦</p>
+        <h2>Winners</h2>
+    </div>
+    <div class="event-grid">
+        {% for winner in event.winners %}
+        <article class="event-card">
+            <div class="event-info">
+                <h3>{% if winner.position == 1 %}🥇{% elif winner.position == 2 %}🥈{% elif winner.position == 3 %}🥉{% else %}🏅{% endif %} {{ winner.winner_name }}</h3>
+                <p>Position {{ winner.position }}</p>
+                <p>{{ winner.department or '' }}</p>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <a href="{{ url_for('fest_page', slug=event.fest) }}" class="back-home">← Back to Fest</a>
+</section>
+{% endblock %}

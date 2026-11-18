@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% from '_event_card.html' import event_card %}
+
+{% block content %}
+
+<section class="page-section">
+
+    {% include '_flashes.html' %}
+
+    <div class="section-heading">
+        <p>✦ {{ fest.group | upper }} ✦</p>
+        <h2 data-split="chars">{{ fest.icon }} {{ fest.name }}</h2>
+        <span>{{ fest.desc }}</span>
+    </div>
+
+    {% if fest.group == 'YVIDH' %}
+    <div class="fest-switch">
+        <a href="{{ url_for('fest_page', slug='yvidh-tech') }}"
+           class="{{ 'active' if slug == 'yvidh-tech' }}">💻 Tech Fest</a>
+        <a href="{{ url_for('fest_page', slug='yvidh-arts') }}"
+           class="{{ 'active' if slug == 'yvidh-arts' }}">🎨 Arts Fest</a>
+    </div>
+    {% elif fest.group == 'Sports' %}
+    <div class="fest-switch">
+        <a href="{{ url_for('fest_page', slug='rapido') }}"
+           class="{{ 'active' if slug == 'rapido' }}">🏃 RAPIDO</a>
+        <a href="{{ url_for('fest_page', slug='spike') }}"
+           class="{{ 'active' if slug == 'spike' }}">🏐 SPIKE</a>
+    </div>
+    {% endif %}
+
+    {% for status, heading, css in [('Ongoing', 'Currently Happening', ''), ('Upcoming', 'Upcoming Events', 'upcoming-heading'), ('Completed', 'Completed Events', 'upcoming-heading')] %}
+    {% set group = events | selectattr('status', 'equalto', status) | list %}
+
+    <h3 class="event-subheading {{ css }}">{{ heading }}</h3>
+
+    {% if group %}
+    <div class="event-grid">
+        {% for event in group %}
+            {{ event_card(event) }}
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-upcoming">No {{ status | lower }} events here yet.</p>
+    {% endif %}
+    {% endfor %}
+
+    <a href="{{ url_for('home') }}" class="back-home">← Back to Home</a>
+
+</section>
+
+{% endblock %}

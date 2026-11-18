@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Event Hub</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- AOS (flip-left on scroll) -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+</head>
+
+<body data-page="{{ request.endpoint }}">
+
+  <div id="smooth-wrapper">
+  <div id="smooth-content">
+
+    <nav class="navbar">
+        <a href="/" class="logo">CEH<span>✦</span>
+            <small>CAMPUS EVENT HUB</small>
+        </a>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="#events">Events</a>
+            <a href="#categories">Categories</a>
+            <a href="#about">About</a>
+            <!-- added: fests + account links -->
+            <a href="{{ url_for('home') }}#fests">Fests</a>
+            {% if session.get('role') == 'student' %}
+            <a href="{{ url_for('student_dashboard') }}">My Events</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+            {% elif session.get('role') == 'admin' %}
+            <a href="{{ url_for('admin_dashboard') }}">Admin Panel</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+        </div>
+
+        <a href="#events" class="nav-button">Explore Events ↗</a>
+    </nav>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer">
+        <h2>CAMPUS EVENT HUB</h2>
+        <p>Celebrate • Connect • Create</p>
+        <p>© 2026 Campus Event Hub</p>
+    </footer>
+
+  </div>
+  </div>
+
+    <!-- Animation libraries -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Draggable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+    <script src="{{ url_for('static', filename='js/animation.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% from '_event_card.html' import event_card %}
+
+{% block content %}
+
+{% include '_flashes.html' %}
+
+<section class="hero">
+    <div class="hero-decoration">✦</div>
+    <div class="hero-content" data-speed="0.8">
+        <p class="hero-tag">✦ WELCOME TO OUR CAMPUS ✦</p>
+
+        <h1>CAMPUS<br><span>EVENT HUB</span></h1>
+
+        <p class="hero-subtitle">
+            CELEBRATE • CONNECT • CREATE
+        </p>
+
+        <p class="hero-description">
+            Every event. Every celebration.<br>
+            Every unforgettable campus moment.
+        </p>
+
+        <a href="#events" class="hero-button">
+            Explore Events ↓
+        </a>
+    </div>
+
+    <div class="floating-star star-one">✦</div>
+    <div class="floating-star star-two">✧</div>
+    <div class="floating-star star-three">✦</div>
+
+    <div class="hero-bottom" data-speed="2.0">
+        <span>✦</span> MAKE MEMORIES TOGETHER <span>✦</span>
+    </div>
+</section>
+
+
+<section class="events-section scroll-trigger-ready__worm-wrap" id="events">
+
+    <div class="section-heading">
+        <p>✦ WHAT'S HAPPENING? ✦</p>
+        <h2>Campus Events</h2>
+        <span>Discover the excitement happening on campus!</span>
+    </div>
+
+    <h3 class="event-subheading">Currently Happening</h3>
+
+    {% set ongoing_events = events | selectattr('status', 'equalto', 'Ongoing') | list %}
+
+    {% if ongoing_events %}
+    <div class="event-grid">
+
+        {% for event in ongoing_events %}
+        <article class="event-card" data-aos="flip-left">
+
+            {% if event.poster %}
+            <img src="{{ url_for('static', filename='uploads/' + event.poster) }}"
+                 alt="{{ event.title }}">
+            {% else %}
+            <div class="poster-placeholder">✦ CAMPUS EVENT ✦</div>
+            {% endif %}
+
+            <div class="event-info">
+                <span class="event-status ongoing">● LIVE NOW</span>
+                <h3>{{ event.title }}</h3>
+                <p>{{ event.category or 'Campus Event' }}</p>
+                <p>{{ event.description }}</p>
+
+                <div class="event-meta">
+                    <span>📅 {{ event.start_date }}</span>
+                    <span>📍 {{ event.venue }}</span>
+                    <span>👥 {{ event.reg_count }} registered</span>
+                    {% if event.registered %}<span>✔ You are registered</span>{% endif %}
+                </div>
+
+                <a href="{{ url_for('event_detail', event_id=event.id) }}" class="card-link">
+                    Details &amp; register ↗
+                </a>
+            </div>
+        </article>
+        {% endfor %}
+
+    </div>
+    {% else %}
+    <div class="no-events">
+        <div class="empty-icon">🎉</div>
+        <h2>No Events Taking Place</h2>
+        <p>Something exciting is coming soon. Stay tuned!</p>
+    </div>
+    {% endif %}
+
+
+    <h3 class="event-subheading upcoming-heading">Upcoming Events</h3>
+
+    {% set upcoming_events = events | selectattr('status', 'equalto', 'Upcoming') | list %}
+
+    {% if upcoming_events %}
+    <div class="event-grid">
+
+        {% for event in upcoming_events %}
+        <article class="event-card" data-aos="flip-left">
+
+            {% if event.poster %}
+            <img src="{{ url_for('static', filename='uploads/' + event.poster) }}"
+                 alt="{{ event.title }}">
+            {% else %}
+            <div class="poster-placeholder">✦ CAMPUS EVENT ✦</div>
+            {% endif %}
+
+            <div class="event-info">
+                <span class="event-status upcoming">UPCOMING</span>
+                <h3>{{ event.title }}</h3>
+                <p>{{ event.category or 'Campus Event' }}</p>
+                <p>{{ event.description }}</p>
+
+                <div class="event-meta">
+                    <span>📅 {{ event.start_date }}</span>
+                    <span>📍 {{ event.venue }}</span>
+                    <span>👥 {{ event.reg_count }} registered</span>
+                    {% if event.registered %}<span>✔ You are registered</span>{% endif %}
+                </div>
+
+                <a href="{{ url_for('event_detail', event_id=event.id) }}" class="card-link">
+                    Details &amp; register ↗
+                </a>
+            </div>
+        </article>
+        {% endfor %}
+
+    </div>
+    {% else %}
+    <p class="empty-upcoming">No upcoming events yet.</p>
+    {% endif %}
+
+
+    <h3 class="event-subheading upcoming-heading">Completed Events</h3>
+
+    {% set completed_events = events | selectattr('status', 'equalto', 'Completed') | list %}
+
+    {% if completed_events %}
+    <div class="event-grid">
+        {% for event in completed_events | reverse %}
+            {{ event_card(event) }}
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-upcoming">No completed events yet.</p>
+    {% endif %}
+
+</section>
+
+
+<section class="fests-section" id="fests">
+    <div class="section-heading">
+        <p>✦ FESTS &amp; PROGRAMS ✦</p>
+        <h2>Fest Spotlight</h2>
+        <span>Explore every fest in a clean, evenly aligned card layout.</span>
+    </div>
+
+    <div class="fest-gallery">
+        {% for fest in fests %}
+        <article class="fest-tile">
+            <div class="tile-icon">{{ fest.icon }}</div>
+            <div class="tile-name">{{ fest.name }}</div>
+            <div class="tile-detail">
+                <p class="tile-desc">{{ fest.desc }}</p>
+                <p class="tile-count">
+                    {{ fest.total }} event{{ '' if fest.total == 1 else 's' }}
+                    {% if fest.live %} • {{ fest.live }} live now{% endif %}
+                </p>
+                <a href="{{ url_for('fest_page', slug=fest.slug) }}" class="card-link">Open {{ fest.name }} ↗</a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+
+<section class="categories-section" id="categories">
+    <div class="section-heading">
+        <p>✦ FIND YOUR INTEREST ✦</p>
+        <h2 class="drag-target">Explore Categories</h2>
+        <span>One campus. Endless experiences.</span>
+        <div class="drag-hint">( drag a card over the title to change its colour )</div>
+    </div>
+
+    <div class="category-grid">
+        <div class="category-card">🎨<span>Arts</span></div>
+        <div class="category-card">💻<span>Technology</span></div>
+        <div class="category-card">🏆<span>Sports</span></div>
+        <div class="category-card">🌴<span>Celebrations</span></div>
+        <div class="category-card">🎭<span>Cultural</span></div>
+        <div class="category-card">🎵<span>Music</span></div>
+    </div>
+</section>
+
+
+<section class="about-section" id="about">
+    <div>
+        <p class="hero-tag">✦ OUR CAMPUS, OUR STORIES ✦</p>
+        <h2>More Than Events.<br>Memories Forever.</h2>
+        <p>
+            Discover campus celebrations, competitions,
+            workshops and unforgettable experiences.
+        </p>
+    </div>
+    <div class="about-symbol">✦</div>
+</section>
+
+{% endblock %}

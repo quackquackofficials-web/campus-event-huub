@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="auth-section">
+    <div class="auth-container wide">
+
+        <div class="section-heading">
+            <p>✦ ADMIN ✦</p>
+            <h2>{{ 'Edit Event' if event else 'Add Event' }}</h2>
+            <span>Upload the details for this event.</span>
+        </div>
+
+        {% include '_flashes.html' %}
+
+        <form method="POST" enctype="multipart/form-data"
+              action="{{ url_for('event_edit', event_id=event.id) if event else url_for('event_new') }}"
+              class="auth-form">
+
+            <label>Event Title</label>
+            <input type="text" name="title" value="{{ form.get('title', '') }}"
+                   placeholder="Enter event title" required>
+
+            <label>Fest / Program</label>
+            <select name="fest" required>
+                <option value="">Select fest / program</option>
+                {% for group in FEST_GROUPS %}
+                <optgroup label="{{ group }}">
+                    {% for slug, fest in FESTS.items() if fest.group == group %}
+                    <option value="{{ slug }}" {{ 'selected' if form.get('fest') == slug }}>{{ fest.name }}</option>
+                    {% endfor %}
+                </optgroup>
+                {% endfor %}
+            </select>
+
+            <label>Description</label>
+            <textarea name="description" rows="4"
+                      placeholder="What is this event about? Rules, team size, prizes...">{{ form.get('description', '') or '' }}</textarea>
+
+            <label>Venue</label>
+            <input type="text" name="venue" value="{{ form.get('venue', '') or '' }}"
+                   placeholder="Where is it happening?" required>
+
+            <div class="form-row">
+                <div>
+                    <label>Start Date</label>
+                    <input type="date" name="start_date" value="{{ form.get('start_date', '') }}" required>
+                </div>
+                <div>
+                    <label>End Date</label>
+                    <input type="date" name="end_date" value="{{ form.get('end_date', '') }}" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label>Start Time (optional)</label>
+                    <input type="time" name="start_time" value="{{ form.get('start_time', '') or '' }}">
+                </div>
+                <div>
+                    <label>End Time (optional)</label>
+                    <input type="time" name="end_time" value="{{ form.get('end_time', '') or '' }}">
+                </div>
+            </div>
+
+            <label>Assigned Admin</label>
+            <select name="admin_id" required>
+                {% for a in admins %}
+                <option value="{{ a.id }}" {{ 'selected' if form.get('admin_id')|string == a.id|string }}>
+                    {{ a.name }} ({{ a.department }})
+                </option>
+                {% endfor %}
+            </select>
+
+            <label>Poster {{ '(leave empty to keep the current one)' if event and event.poster }}</label>
+            <input type="file" name="poster" accept=".png,.jpg,.jpeg,.gif,.webp">
+
+            <button type="submit" class="auth-button">
+                {{ 'Save Changes ↗' if event else 'Add Event ↗' }}
+            </button>
+        </form>
+
+        <a href="{{ url_for('admin_dashboard') }}" class="back-home">← Back to Dashboard</a>
+
+    </div>
+</section>
+
+{% endblock %}

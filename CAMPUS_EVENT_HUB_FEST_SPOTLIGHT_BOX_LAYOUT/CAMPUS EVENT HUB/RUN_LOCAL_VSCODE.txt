@@ -1,0 +1,27 @@
+CAMPUS EVENT HUB — RUN LOCALLY IN VS CODE (WINDOWS)
+
+1. Install Python 3.10 or newer and VS Code.
+2. Extract this ZIP.
+3. In VS Code choose File > Open Folder and select the "CAMPUS EVENT HUB" folder.
+4. Open Terminal > New Terminal.
+5. Create a virtual environment:
+   py -m venv .venv
+6. Activate it in PowerShell:
+   .\.venv\Scripts\Activate.ps1
+   If PowerShell blocks activation, run:
+   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+   .\.venv\Scripts\Activate.ps1
+7. Install packages:
+   py -m pip install -r requirements.txt
+8. Start the website:
+   py app.py
+9. Open this address in your browser:
+   http://127.0.0.1:5000
+
+The local version uses SQLite and creates campus_events.db automatically when app.py starts.
+Stop the server with Ctrl+C in the VS Code terminal.
+Run it again later with:
+   .\.venv\Scripts\Activate.ps1
+   py app.py
+
+Do not use this SQLite local package as the Vercel production deployment package.

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% set medals = {1: '🥇', 2: '🥈', 3: '🥉'} %}
+
+<section class="auth-section">
+    <div class="auth-container wide">
+
+        <div class="section-heading">
+            <p>✦ WINNERS ✦</p>
+            <h2>{{ event.title }}</h2>
+            <span>Fill in the positions you want to display. Leave a row empty to skip it.</span>
+        </div>
+
+        {% include '_flashes.html' %}
+
+        <form method="POST" action="{{ url_for('event_winners', event_id=event.id) }}" class="auth-form">
+
+            {% for position in range(1, 6) %}
+            {% set w = current.get(position) %}
+            <label>{{ medals.get(position, '🏅') }} Position {{ position }}</label>
+            <div class="form-row">
+                <input type="text" name="winner_name_{{ position }}"
+                       value="{{ w.winner_name if w else '' }}"
+                       placeholder="Winner / team name">
+                <input type="text" name="winner_dept_{{ position }}"
+                       value="{{ w.department if w else '' }}"
+                       placeholder="Department / college">
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="auth-button">Save Winners ↗</button>
+        </form>
+
+        <a href="{{ url_for('admin_dashboard') }}" class="back-home">← Back to Dashboard</a>
+
+    </div>
+</section>
+
+{% endblock %}

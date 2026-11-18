@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page-section">
+
+    {% include '_flashes.html' %}
+
+    <div class="section-heading">
+        <p>✦ REGISTERED STUDENTS ✦</p>
+        <h2>{{ event.title }}</h2>
+        <span>{{ students | length }} student{{ '' if students | length == 1 else 's' }} registered</span>
+    </div>
+
+    {% if students %}
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Roll No.</th>
+                    <th>Department</th>
+                    <th>Sem</th>
+                    <th>Year</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ s.name }}</td>
+                    <td>{{ s.roll_number }}</td>
+                    <td>{{ s.department }}</td>
+                    <td>{{ s.semester }}</td>
+                    <td>{{ s.year }}</td>
+                    <td>{{ s.email }}</td>
+                    <td>{{ s.phone or '-' }}</td>
+                    <td>{{ s.note or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="no-events">
+        <div class="empty-icon">👥</div>
+        <h2>No Registrations Yet</h2>
+        <p>Students who register will appear here.</p>
+    </div>
+    {% endif %}
+
+    <a href="{{ url_for('admin_dashboard') }}" class="back-home">← Back to Dashboard</a>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% set labels = {'Ongoing': '● LIVE NOW', 'Upcoming': 'UPCOMING', 'Completed': 'COMPLETED'} %}
+
+<section class="page-section">
+
+    {% include '_flashes.html' %}
+
+    <div class="section-heading">
+        <p>✦ ADMIN ✦</p>
+        <h2>Admin Panel</h2>
+        <span>Manage the events assigned to you.</span>
+    </div>
+
+    <div class="profile-card">
+        <div><small>Name</small><strong>{{ admin.name }}</strong></div>
+        <div><small>Department</small><strong>{{ admin.department }}</strong></div>
+        <div><small>In-charge of</small><strong>{{ admin.in_charge_of }}</strong></div>
+        <div><small>Email</small><strong>{{ admin.email }}</strong></div>
+        <div><small>Phone</small><strong>{{ admin.phone or '-' }}</strong></div>
+    </div>
+
+    <div class="dash-actions">
+        <a href="{{ url_for('event_new') }}" class="hero-button">+ Add Event</a>
+    </div>
+
+    {% if events %}
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Fest / Program</th>
+                    <th>Status</th>
+                    <th>Dates</th>
+                    <th>Venue</th>
+                    <th>Registered</th>
+                    <th>Assigned admin</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td><a href="{{ url_for('event_detail', event_id=event.id) }}">{{ event.title }}</a></td>
+                    <td>{{ event.category or '-' }}</td>
+                    <td><span class="event-status {{ event.status | lower }}">{{ labels[event.status] }}</span></td>
+                    <td>{{ event.start_date }}{% if event.end_date != event.start_date %} → {{ event.end_date }}{% endif %}</td>
+                    <td>{{ event.venue }}</td>
+                    <td>{{ event.reg_count }}</td>
+                    <td>{{ event.admin_name or 'Unassigned' }}</td>
+                    <td class="row-actions">
+                        {% if not event.admin_id %}
+                        <form method="POST" action="{{ url_for('claim_event', event_id=event.id) }}">
+                            <button type="submit">Take in-charge</button>
+                        </form>
+                        {% else %}
+                        <a href="{{ url_for('event_edit', event_id=event.id) }}">Edit</a>
+                        <a href="{{ url_for('event_registrations', event_id=event.id) }}">Students</a>
+                        {% if event.status != 'Upcoming' %}
+                        <a href="{{ url_for('event_winners', event_id=event.id) }}">Winners</a>
+                        {% endif %}
+                        <form method="POST" action="{{ url_for('event_delete', event_id=event.id) }}"
+                              onsubmit="return confirm('Delete this event and its registrations?');">
+                            <button type="submit" class="link-danger">Delete</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="no-events">
+        <div class="empty-icon">🗂️</div>
+        <h2>No Events Assigned</h2>
+        <p>Add an event, or ask another admin to assign one to you.</p>
+    </div>
+    {% endif %}
+
+</section>
+
+{% endblock %}

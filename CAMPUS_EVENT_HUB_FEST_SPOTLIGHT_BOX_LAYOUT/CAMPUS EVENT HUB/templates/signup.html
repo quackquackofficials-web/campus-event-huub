@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="auth-page auth-signup-page">
+  <div class="auth-orb auth-orb-one"></div><div class="auth-orb auth-orb-two"></div>
+  <div class="auth-shell auth-shell-signup">
+    <aside class="auth-showcase signup-showcase">
+      <a class="auth-brand" href="{{ url_for('home') }}"><span class="brand-mark">CEH</span><span><strong>CAMPUS EVENT HUB</strong><small>CELEBRATE · CONNECT · CREATE</small></span></a>
+      <div class="showcase-copy"><span class="eyebrow"><i></i> BE PART OF THE EXPERIENCE</span><h1>Your campus<br>story begins <em>now.</em></h1><p>Create your account to explore events, register with ease, and stay connected with everything happening on campus.</p><div class="signup-benefits"><div><b>✦</b><span><strong>One campus community</strong><small>Everything happening in one place.</small></span></div><div><b>↗</b><span><strong>Simple event registration</strong><small>Save your spot in just a few steps.</small></span></div><div><b>◎</b><span><strong>Your own dashboard</strong><small>Keep track of your campus activities.</small></span></div></div></div>
+      <div class="showcase-foot"><span>✦</span> MADE FOR CAMPUS LIFE <span class="foot-line"></span> <span>STCET</span></div>
+    </aside>
+    <div class="auth-card-wrap signup-card-wrap">
+      <div class="auth-card signup-card">
+        <div class="auth-card-heading"><span class="mobile-eyebrow">CAMPUS EVENT HUB</span><span class="auth-icon">✦</span><p class="auth-kicker">JOIN THE COMMUNITY</p><h2>Create your<br><span>account.</span></h2><p class="auth-subtitle">Fill in your details to get started.</p></div>
+        {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="auth-alert {{ category }}" role="alert">{{ message }}</div>{% endfor %}{% endwith %}
+        <form method="POST" action="{{ url_for('signup') }}" class="auth-form auth-form-modern" id="signup-form">
+          <div class="field-group"><label for="role">ACCOUNT TYPE</label><div class="input-shell"><span class="field-icon">▦</span><select name="role" id="role" required><option value="student" {% if request.form.get('role', 'student') == 'student' %}selected{% endif %}>Student</option><option value="admin" {% if request.form.get('role') == 'admin' %}selected{% endif %}>Administrator</option></select><span class="select-chevron">⌄</span></div></div>
+          <div class="field-group"><label for="signup-name">FULL NAME</label><div class="input-shell"><span class="field-icon">♙</span><input id="signup-name" type="text" name="name" placeholder="Enter your full name" value="{{ request.form.get('name', '') }}" autocomplete="name" required></div></div>
+          <div id="student-fields" class="role-fields">
+            <div class="form-grid"><div class="field-group"><label for="roll-number">ROLL NUMBER</label><div class="input-shell"><span class="field-icon">#</span><input id="roll-number" type="text" name="roll_number" placeholder="e.g. STC23AM026" value="{{ request.form.get('roll_number', '') }}"></div></div><div class="field-group"><label for="student-department">DEPARTMENT</label><div class="input-shell"><span class="field-icon">⌂</span><input id="student-department" type="text" name="department" placeholder="e.g. CSE-AIML" value="{{ request.form.get('department', '') }}"></div></div></div>
+            <div class="form-grid"><div class="field-group"><label for="semester">SEMESTER</label><div class="input-shell"><span class="field-icon">▤</span><select name="semester" id="semester"><option value="">Select semester</option>{% for n in range(1,9) %}<option value="{{ n }}" {% if request.form.get('semester') == n|string %}selected{% endif %}>Semester {{ n }}</option>{% endfor %}</select><span class="select-chevron">⌄</span></div></div><div class="field-group"><label for="year">YEAR</label><div class="input-shell"><span class="field-icon">◷</span><select name="year" id="year"><option value="">Select year</option>{% for y in ['First Year','Second Year','Third Year','Fourth Year'] %}<option {% if request.form.get('year') == y %}selected{% endif %}>{{ y }}</option>{% endfor %}</select><span class="select-chevron">⌄</span></div></div></div>
+          </div>
+          <div id="admin-fields" class="role-fields" hidden>
+            <div class="field-group"><label for="admin-department">DEPARTMENT</label><div class="input-shell"><span class="field-icon">⌂</span><input type="text" name="department" id="admin-department" placeholder="Enter department" value="{{ request.form.get('department', '') }}"></div></div>
+            <div class="field-group"><label for="in-charge">IN-CHARGE OF EVENT</label><div class="input-shell"><span class="field-icon">✦</span><input type="text" name="in_charge_of" id="in-charge" placeholder="Enter event name" value="{{ request.form.get('in_charge_of', '') }}"></div></div>
+          </div>
+          <div class="form-grid"><div class="field-group"><label for="signup-email">EMAIL ADDRESS</label><div class="input-shell"><span class="field-icon">✉</span><input id="signup-email" type="email" name="email" placeholder="you@example.com" value="{{ request.form.get('email', '') }}" autocomplete="email" required></div></div><div class="field-group"><label for="signup-phone">PHONE NUMBER</label><div class="input-shell"><span class="field-icon">⌕</span><input id="signup-phone" type="tel" name="phone" placeholder="Your phone number" value="{{ request.form.get('phone', '') }}" autocomplete="tel"></div></div></div>
+          <div class="field-group"><label for="signup-password">PASSWORD</label><div class="input-shell"><span class="field-icon">♙</span><input id="signup-password" type="password" name="password" placeholder="At least 8 characters" minlength="8" autocomplete="new-password" required><button class="password-toggle" type="button" aria-label="Show password" data-toggle-password="signup-password">Show</button></div><small class="field-hint">Use at least 8 characters.</small></div>
+          <button type="submit" class="auth-submit"><span>Create account</span><span class="submit-arrow">→</span></button>
+        </form>
+        <p class="auth-switch-modern">Already have an account? <a href="{{ url_for('login') }}">Sign in <span>↗</span></a></p><a class="auth-back" href="{{ url_for('home') }}">← Back to home</a>
+      </div><p class="auth-legal">© 2026 Campus Event Hub. All rights reserved.</p>
+    </div>
+  </div>
+</section>
+<script>
+(() => {
+ const role = document.getElementById('role'); const student = document.getElementById('student-fields'); const admin = document.getElementById('admin-fields');
+ function changeForm() {
+   const isStudent = role.value === 'student';
+   student.hidden = !isStudent; admin.hidden = isStudent;
+   student.querySelectorAll('input,select').forEach(el => { el.disabled = !isStudent; el.required = isStudent; });
+   admin.querySelectorAll('input,select').forEach(el => { el.disabled = isStudent; el.required = !isStudent; });
+   const active = isStudent ? student : admin; active.classList.remove('role-fields-enter'); void active.offsetWidth; active.classList.add('role-fields-enter');
+ }
+ role.addEventListener('change', changeForm); changeForm();
+ document.querySelectorAll('[data-toggle-password]').forEach(button => button.addEventListener('click', () => { const input = document.getElementById(button.dataset.togglePassword); const show = input.type === 'password'; input.type = show ? 'text' : 'password'; button.textContent = show ? 'Hide' : 'Show'; button.setAttribute('aria-label', show ? 'Hide password' : 'Show password'); }));
+})();
+</script>
+{% endblock %}
